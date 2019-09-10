@@ -43,7 +43,7 @@ ADD FOREIGN KEY(capability_id) REFERENCES Capability(capability_id),
 ADD FOREIGN KEY(band_id) REFERENCES Band(band_id);
 
 ALTER TABLE Capability
-ADD leader_id SMALLINT UNSIGNED,
+ADD leader_id SMALLINT UNSIGNED UNIQUE,
 ADD job_family_id SMALLINT UNSIGNED NOT NULL,
 ADD FOREIGN KEY(leader_id) REFERENCES User(user_id),
 ADD FOREIGN KEY(job_family_id) REFERENCES Job_Family(job_family_id);
