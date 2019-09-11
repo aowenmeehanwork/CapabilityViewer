@@ -26,7 +26,7 @@ export class TablePageComponent implements OnInit {
   columnDefs = [];
   public gridOptions: GridOptions;
   components;
-  
+
   ngOnInit() {
     console.log(this.gridOptions.api)
   }
@@ -38,7 +38,7 @@ export class TablePageComponent implements OnInit {
   constructor(private location: Location, data: DataService, private route: ActivatedRoute, private router: Router) {
       this.gridOptions = <GridOptions>{};
       this.components = { nameCellRenderer: NameCellRenderer };
-    
+
       data.getAllFromDatabase().subscribe(responseList => {
       //DO EVERYTHING INSIDE SUBSCRIPTION
       this.jobFamilies = responseList[0];
@@ -63,13 +63,13 @@ export class TablePageComponent implements OnInit {
 
   generateTable(jobFamilies: JobFamily[], capabilities: Capability[], bands: Band[], roles: Role[]) {
     this.rowData = [];
-   
+
     var currentBandId = 1; //bands start at one
 
-    var rowToAppend = []; 
-    var columnsToShow = ["firstColumn","secondColumn","thirdColumn","fourthColumn"]; 
+    var rowToAppend = [];
+    var columnsToShow = ["firstColumn","secondColumn","thirdColumn","fourthColumn"];
 
-    var j = 0; 
+    var j = 0;
 
     var k = 0;
     rowToAppend["bandLevels"] = bands[k]; //The very first item in the row should be the band level.
@@ -77,7 +77,7 @@ export class TablePageComponent implements OnInit {
     var i;
     for(i = 0; i < roles.length; i++){ //for each role
       if (currentBandId == roles[i].band_id){
-      //we are in the current band, object should be appended to with new roles    
+      //we are in the current band, object should be appended to with new roles
       rowToAppend[columnsToShow[j]]= roles[i]; //Here we are building up the row with the new role
       roles[i].type = 'role';
 
@@ -86,29 +86,29 @@ export class TablePageComponent implements OnInit {
 
         rowToAppend["bandLevels"]= bands[k];  //add band level for new row
         bands[k].type = 'band';
-        k++; 
-        
+        k++;
+
         this.rowData.push(rowToAppend); //push the completed band row
 
         rowToAppend = []; //empty the row that was being built up
         j = 0; //reset the counter which keeps track of which columns should be shown (so that it starts building the new row from column 0)
-        
-        //Add a role to the new band with 
+
+        //Add a role to the new band with
         rowToAppend[columnsToShow[j]]= roles[i];
         roles[i].type = 'role';
       }
-     j++; 
+     j++;
      currentBandId = roles[i].band_id; // update what band we are in
     }
 
-    rowToAppend["bandLevels"]= bands[k];  
+    rowToAppend["bandLevels"]= bands[k];
     bands[k].type = 'band';
     this.rowData.push(rowToAppend);
-    // When the loop has finished, push the final row it was building up. 
+    // When the loop has finished, push the final row it was building up.
 
     console.log("Full data \n" );
     this.columnDefs = [
-      
+
       {
         headerName: "Band Level",
         children: [
