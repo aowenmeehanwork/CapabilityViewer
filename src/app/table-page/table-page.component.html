@@ -2,15 +2,20 @@
 
 
 <p>
-    <a (click)="goBack()">Go Back via TypeScript</a> | <a [routerLink]="['/']">Go Back via Markup</a>
+    <a (click)="goBack()">Click To Go Back via TypeScript</a>
 </p>
 
 <div class="table">
 <ag-grid-angular 
+    #myGrid
     style="width: 1500px; height: 500px;" 
     class="ag-theme-balham"
+    [gridOptions]="gridOptions"
     [rowData]="rowData" 
     [columnDefs]="columnDefs"
+    (cellClicked)="onCellClicked($event)"
+    (sortChanged)="onColumnClicked($event)"
+    [components]="components"
     >
 </ag-grid-angular>
 </div>
