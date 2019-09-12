@@ -46,6 +46,10 @@ export class TablePageComponent implements OnInit {
     this.router.navigate(['/detail-viewer/' + type + "/" + id]);
   }
 
+  navigateToCapabilityView(id: number) {
+    this.router.navigate(['/capability/' + id]);
+  }
+
   generateTable(jobFamilies: JobFamily[], capabilities: Capability[], bands: Band[], roles: Role[]) {
     this.rowData = [
       { business_development: 'Toyota', model: 'Celica', price: 35000 },
