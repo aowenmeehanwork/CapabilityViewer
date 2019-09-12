@@ -139,20 +139,8 @@ export class TablePageComponent implements OnInit {
     var row = this.gridOptions.api.getDisplayedRowAtIndex(focusedCell.rowIndex);
     var cellValue = this.gridOptions.api.getValue(focusedCell.column, row);
 
-      if (cellValue.type == 'role') {
-        window.alert("This is a cell of type " + cellValue.type + " with id " + cellValue.role_id);
-      }
-      else if (cellValue.type == 'band') {
-        window.alert("This is a cell of type " + cellValue.type + " with id " + cellValue.band_id);
-    }
+    this.navigateToDetailView(cellValue.type, cellValue.role_id);
   }
-/*
-  onColumnClicked(event){
-    var focusedColumn = this.gridOptions.columnApi.getAllColumns();
-    window.alert("Column things " + focusedColumn);
-    console.log("Column selected");
-  }*/
-  
 }
 
 function NameCellRenderer() {
