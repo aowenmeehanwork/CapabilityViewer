@@ -6,7 +6,9 @@
         [columnDefs]="columnDefs"
         (cellClicked)="onCellClicked($event)"
         (sortChanged)="onColumnClicked($event)"
-        [components]="components">
+        [components]="components"
+        (gridReady)="onGridReady($event)"
+        [animateRows] = "true">
     </ag-grid-angular>
     <button (click)="navigateToCapabilityView(1)">capability</button>
 </div>

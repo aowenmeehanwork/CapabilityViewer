@@ -7,5 +7,6 @@ export class Band {
     constructor(name: string) {
         this.band_name = name;
     }
+    band_responsibilities: string;
     type: string;
 }
