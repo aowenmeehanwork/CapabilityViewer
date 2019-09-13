@@ -8,6 +8,7 @@ import { Band } from '../Band';
 import { Observable } from 'rxjs';
 import { GridOptions } from 'ag-grid-community';
 import {ActivatedRoute, Router} from "@angular/router";
+import {FormsModule} from '@angular/forms';
 
 @Component({
   selector: 'table-page',
@@ -26,19 +27,21 @@ export class TablePageComponent implements OnInit {
   columnDefs = [];
   public gridOptions: GridOptions;
   components;
-
+  private gridApi;
+  
   ngOnInit() {
     console.log(this.gridOptions.api)
   }
 
-  onGridReady() {
-    console.log(this.gridOptions.api);
+  onGridReady(params) {
+    // Preparation for grid api
+    this.gridApi=params.api
 }
 
   constructor(private location: Location, data: DataService, private route: ActivatedRoute, private router: Router) {
       this.gridOptions = <GridOptions>{};
       this.components = { nameCellRenderer: NameCellRenderer };
-
+    
       data.getAllFromDatabase().subscribe(responseList => {
       //DO EVERYTHING INSIDE SUBSCRIPTION
       this.jobFamilies = responseList[0];
@@ -60,16 +63,16 @@ export class TablePageComponent implements OnInit {
   navigateToCapabilityView(id: number) {
     this.router.navigate(['/capability/' + id]);
   }
-
+  
   generateTable(jobFamilies: JobFamily[], capabilities: Capability[], bands: Band[], roles: Role[]) {
     this.rowData = [];
-
+    
     var currentBandId = 1; //bands start at one
 
-    var rowToAppend = [];
-    var columnsToShow = ["firstColumn","secondColumn","thirdColumn","fourthColumn"];
+    var rowToAppend = []; 
+    var columnsToShow = ["firstColumn","secondColumn","thirdColumn","fourthColumn"]; 
 
-    var j = 0;
+    var j = 0; 
 
     var k = 0;
     rowToAppend["bandLevels"] = bands[k]; //The very first item in the row should be the band level.
@@ -77,7 +80,7 @@ export class TablePageComponent implements OnInit {
     var i;
     for(i = 0; i < roles.length; i++){ //for each role
       if (currentBandId == roles[i].band_id){
-      //we are in the current band, object should be appended to with new roles
+      //we are in the current band, object should be appended to with new roles    
       rowToAppend[columnsToShow[j]]= roles[i]; //Here we are building up the row with the new role
       roles[i].type = 'role';
 
@@ -86,52 +89,73 @@ export class TablePageComponent implements OnInit {
 
         rowToAppend["bandLevels"]= bands[k];  //add band level for new row
         bands[k].type = 'band';
-        k++;
-
+        k++; 
+        
         this.rowData.push(rowToAppend); //push the completed band row
 
         rowToAppend = []; //empty the row that was being built up
         j = 0; //reset the counter which keeps track of which columns should be shown (so that it starts building the new row from column 0)
-
-        //Add a role to the new band with
+        
+        //Add a role to the new band with 
         rowToAppend[columnsToShow[j]]= roles[i];
         roles[i].type = 'role';
       }
-     j++;
+     j++; 
      currentBandId = roles[i].band_id; // update what band we are in
     }
 
-    rowToAppend["bandLevels"]= bands[k];
+    rowToAppend["bandLevels"]= bands[k];  
     bands[k].type = 'band';
     this.rowData.push(rowToAppend);
-    // When the loop has finished, push the final row it was building up.
+    // When the loop has finished, push the final row it was building up. 
 
     console.log("Full data \n" );
     this.columnDefs = [
-
+      
       {
         headerName: "Band Level",
         children: [
-          { headerName: '', cellRenderer: "nameCellRenderer", field: 'bandLevels', width: 0, filter: 'agTextColumnFilter' },
+          { headerName: '', cellRenderer: "nameCellRenderer", field: 'bandLevels', width: 0, filter: 'agTextColumnFilter',filterParams: {
+            valueGetter: params => {
+              if (params.data.bandLevels.band_name != undefined){
+              return params.data.bandLevels.band_name
+              }
+            }
+          },  },
         ]
       },
       {
         headerName: "Sales and Marketing",
         children: [
-          { headerName: 'Business development', cellRenderer: "nameCellRenderer", field: 'firstColumn', width: 200, filter: 'agTextColumnFilter' },
-          { headerName: 'Account Management',cellRenderer: "nameCellRenderer", field: 'secondColumn', width: 200, filter: 'agNumberColumnFilter' },
-          { headerName: 'Sales', cellRenderer: "nameCellRenderer", field: 'thirdColumn', width: 200 },
-          { headerName: 'Sales', cellRenderer: "nameCellRenderer", field: 'fourthColumn', width: 200 }
+          { headerName: '', cellRenderer: "nameCellRenderer", field: '', width: 200, filter: 'agTextColumnFilter', columnGroupShow: "closed", },
+          { headerName: 'Business development', cellRenderer: "nameCellRenderer", field: 'firstColumn', width: 200, filter: 'agTextColumnFilter', columnGroupShow: "open",filterParams: {
+            valueGetter: params => {
+              if (params.data.firstColumn.role_name != undefined){
+              return params.data.firstColumn.role_name
+              }
+            }
+          }, },
+          { headerName: 'Account Management',cellRenderer: "nameCellRenderer", field: 'secondColumn', width: 200, filter: 'agTextColumnFilter',columnGroupShow: "open",filterParams: {
+            valueGetter: params => {
+              if (params.data.secondColumn.role_name != undefined){
+              return params.data.secondColumn.role_name
+              }
+            }
+          },  },
+          { headerName: 'Sales', cellRenderer: "nameCellRenderer", field: 'thirdColumn', width: 200 ,columnGroupShow: "open"},
+          { headerName: 'Sales', cellRenderer: "nameCellRenderer", field: 'fourthColumn', width: 200 ,columnGroupShow: "open"}
         ]
       },
       {
         headerName: "Technical",
         children: [
+          { headerName: '', cellRenderer: "nameCellRenderer", field: '', width: 200, columnGroupShow: "closed", },
           { headerName: 'Software engineer', field: 'sda', width: 200, columnGroupShow: 'open' },
           { headerName: 'Data Engineering', columnGroupShow: 'open', field: 'total', width: 200, filter: 'agNumberColumnFilter' },
         ]
       }
     ];
+
   }
 
   onCellClicked(event){
@@ -139,7 +163,13 @@ export class TablePageComponent implements OnInit {
     var row = this.gridOptions.api.getDisplayedRowAtIndex(focusedCell.rowIndex);
     var cellValue = this.gridOptions.api.getValue(focusedCell.column, row);
 
-    this.navigateToDetailView(cellValue.type, cellValue.role_id);
+    if(cellValue.type == "role") {
+      var id = cellValue.role_id;
+    } else if (cellValue.type == "band") {
+      var id = cellValue.band_id;
+    }
+    
+    this.navigateToDetailView(cellValue.type, id);
   }
 }
 
