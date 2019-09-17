@@ -17,17 +17,18 @@ import {PageNotFoundComponent} from "./page-not-found/page-not-found.component";
 import {DetailViewerComponent} from "./detail-viewer/detail-viewer.component";
 import { CapabilityLeadViewerComponent } from './capability-lead-viewer/capability-lead-viewer.component';
 import {MatButtonModule} from '@angular/material';
+import {MatMenuModule} from "@angular/material/menu";
 
 @NgModule({
-  declarations: [
-    AppComponent,
-    PageHeaderComponent,
-    LandingPageComponent,
-    TablePageComponent,
-    DetailViewerComponent,
-    PageNotFoundComponent,
-    CapabilityLeadViewerComponent
-  ],
+    declarations: [
+        AppComponent,
+        PageHeaderComponent,
+        LandingPageComponent,
+        TablePageComponent,
+        DetailViewerComponent,
+        PageNotFoundComponent,
+        CapabilityLeadViewerComponent
+    ],
     imports: [
         BrowserModule,
         FormsModule,
@@ -40,10 +41,12 @@ import {MatButtonModule} from '@angular/material';
         CommonModule,
         MatCardModule,
         AppRoutingModule,
-        MatButtonModule
+        MatButtonModule,
+        MatMenuModule
     ],
-  providers: [],
-  bootstrap: [ AppComponent ]
+    providers: [],
+    bootstrap: [AppComponent]
 })
 
-export class AppModule { }
+export class AppModule {
+}

@@ -1,12 +1,9 @@
-export class Band {
+import {IBand} from './iband';
 
-    band_id: number;
-    band_name: string;
-    band_competency: string;
+export class Band extends IBand {
 
     constructor(name: string) {
-        this.band_name = name;
+        super();
+        super.band_name = name;
     }
-    band_responsibilities: string;
-    type: string;
 }
