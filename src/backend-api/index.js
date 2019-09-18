@@ -72,6 +72,13 @@ app.get('/roles/:id', (req,res) => {
     });
 });
 
+app.get('/roles/:id/training', (req,res) => {
+    db.getRoleTraining(req.params.id, (err,rows) => {
+        if(err) return handleError(err);
+        res.send(rows);
+    });
+});
+
 app.get('/capabilities/:id', (req,res) => {
     db.getCapability(req.params.id, (err,row) => {
         if(err) return handleError(err);
