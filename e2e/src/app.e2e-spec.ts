@@ -1,4 +1,5 @@
 import { LandingPage } from './landing-page.po';
+import { DetailViewerRole } from './detail-viewer-role';
 import { BandDetailViewerPage } from './band-detail-viewer-page.po';
 import { browser, logging, protractor } from 'protractor';
 
@@ -24,8 +25,6 @@ describe('Landing Page', () => {
   });
 });
 
-
-
 describe('Band detail page', () => {
   let page: BandDetailViewerPage;
 
@@ -43,6 +42,45 @@ describe('Band detail page', () => {
     expect(page.getResponsibilitiesContent()).toContain('Executive responsibility');
   });
 
+  afterEach(async () => {
+    // Assert that there are no errors emitted from the browser
+    const logs = await browser.manage().logs().get(logging.Type.BROWSER);
+    expect(logs).not.toContain(jasmine.objectContaining({
+      level: logging.Level.SEVERE,
+    } as logging.Entry));
+  });
+});
+
+  afterEach(async () => {
+    // Assert that there are no errors emitted from the browser
+    const logs = await browser.manage().logs().get(logging.Type.BROWSER);
+    expect(logs).not.toContain(jasmine.objectContaining({
+      level: logging.Level.SEVERE,
+    } as logging.Entry));
+  });
+});
+
+describe('Detail Viewer', () => {
+  let page: DetailViewerRole;
+
+  beforeEach(() => {
+    page = new DetailViewerRole();
+ //   page.navigateTo();
+  });
+
+  it('should display Role Title', () => {
+    page.navigateTo();
+    expect(page.getTitle()).toEqual('Head of Business Unit');
+  });
+
+  it('should display Job Summary content after clicking on Job Summary', () => {
+    expect(page.getJobSummaryText()).toEqual('Owns and leads a business area (e.g. a BU) or supporting function (e.g. Legal or HR) with responsibility for budget, people and profit & loss.');
+  });
+
+  it('should redirect to table page when back button is clicked', () => {
+    page.navigateBack();
+    expect(browser.getCurrentUrl()).toEqual('http://localhost:8001/table-page');
+
   it('should display band competencies when competencies panel is clicked', () => {
     page.clickCompetencies();
     expect(page.getCompetenciesContent()).toEqual('Executive Competency');
@@ -59,12 +97,4 @@ describe('Band detail page', () => {
     expect(page.getTrainingContent()).toContain('Coaching - 3. Advanced');
   });
 
-  afterEach(async () => {
-    // Assert that there are no errors emitted from the browser
-    const logs = await browser.manage().logs().get(logging.Type.BROWSER);
-    expect(logs).not.toContain(jasmine.objectContaining({
-      level: logging.Level.SEVERE,
-    } as logging.Entry));
-  });
-});
 
