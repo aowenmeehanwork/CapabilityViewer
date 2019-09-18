@@ -9,7 +9,7 @@ export class TableHeaderClickComponent implements OnInit {
 
   private params: any;
 
-  constructor() { }
+  constructor() {}
 
   ngOnInit() {
   }
